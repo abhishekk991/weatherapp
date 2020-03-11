@@ -28,18 +28,8 @@ class App extends React.Component {
       error: false
     };
     this.getLocation = this.getLocation.bind(this);
+    this.getCoordinates = this.getCoordinates.bind(this);
     //this.getWeather();
-
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(this.getCoordinates);
-      } else {
-        alert("Geolocation is not supported by this browser.");
-      }
-    }
-
-
-
 
     this.weatherIcon = {
       Thunderstorm: "wi-thunderstorm",
@@ -93,6 +83,15 @@ class App extends React.Component {
     }
 
   }
+  //---------------------------
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.getCoordinates);
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
 
   getCoordinates(position) {
     console.log(position);
@@ -142,6 +141,16 @@ class App extends React.Component {
           description={this.state.description}
           weatherIcon={this.state.icon}
         />
+
+        <div class="w3-display-topleft text-light">
+          <h2>React Geolocation info</h2>
+          <button onClick={this.getLocation}>Get Coordinated</button>
+          <h4>HTML Coordinates</h4>
+          <p>Latitude: {this.state.latitude}</p>
+          <p>Longitude: {this.state.longitude}</p>
+          <h4>Google Maps reverse geocoding</h4>
+          <p>Address: {this.state.userAddress}</p>
+        </div>
       </div>
     );
   }
