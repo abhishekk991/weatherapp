@@ -4,6 +4,7 @@ import 'weather-icons/css/weather-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Weather from './app_component/weather.component';
 import Form from './app_component/form.component';
+import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 
 const API_KEY = "32b3079ab847125ac3e4bc7d5fa485ef"
 // const USAPI_key = "bf41980b3f13f19a064dc35104bb2fdf"
@@ -18,7 +19,11 @@ class App extends React.Component {
       longitude: null,
       userAddress: null,
       city: undefined,
+      // country: undefined,
+
       country: undefined,
+      region: undefined,
+
       icon: undefined,
       main: undefined,
       celsius: undefined,
@@ -29,6 +34,9 @@ class App extends React.Component {
     };
     this.getLocation = this.getLocation.bind(this);
     this.getCoordinates = this.getCoordinates.bind(this);
+    this.selectCountry= this.selectCountry.bind(this);
+    this.selectRegion= this.selectRegion.bind(this);
+
     // this.reverseGeocodeCoordinates = this.reverseGeocodeCoordinates(this);
 
     this.weatherIcon = {
@@ -43,6 +51,17 @@ class App extends React.Component {
     };
   }
 
+  //-------------------------------------------
+
+  selectCountry(val) {
+    this.setState({ country: val });
+  }
+
+  selectRegion (val) {
+    this.setState({ region: val });
+  }
+
+  //------------------------
   calCelsius(temp) {
     let cell = Math.floor(temp - 273.15)
     return cell;
@@ -160,10 +179,11 @@ class App extends React.Component {
     }
   };
 
-  render() {
+  render() {    
+
     return (
       <div className="App">
-        <Form loadweather={this.getWeather} error={this.state.error} />
+        <Form loadweather={this.getWeather} error={this.state.error} country={this.state.country} region={this.state.region} selectCountry={this.selectCountry} selectRegion={this.selectRegion}/>
         <Weather
           city={this.state.city}
           country={this.state.country}
@@ -174,16 +194,25 @@ class App extends React.Component {
           weatherIcon={this.state.icon}
         />
 
-        <div className="w3-display-topleft text-light">
-         
-          <div className="btn-coords">
-            <button className="btn btn-success" onClick={this.getLocation}>Get Coordinated</button>
-          </div>
-          <p>Latitude: {this.state.latitude}</p>
-          <p>Longitude: {this.state.longitude}</p>
-          {/* <p>Address: {this.state.userAddress}</p> */}
+      {/* <div>
+        <CountryDropdown
+          value={country}
+          onChange={(val) => this.selectCountry(val)} />
+        <RegionDropdown
+          country={country}
+          value={region}
+          onChange={(val) => this.selectRegion(val)} />
+      </div> */}
 
+        <div className="w3-display-topleft text-light">
+            <div className="btn-coords">
+              <button className="btn btn-success" onClick={this.getLocation}>Get Coordinated</button>
+            </div>
+            <p>Latitude: {this.state.latitude}</p>
+            <p>Longitude: {this.state.longitude}</p>
+            {/* <p>Address: {this.state.userAddress}</p> */}
         </div>
+
       </div>
     );
   }
