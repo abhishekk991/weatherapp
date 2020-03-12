@@ -5,8 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Weather from './app_component/weather.component';
 import Form from './app_component/form.component';
 
-const API_key = "32b3079ab847125ac3e4bc7d5fa485ef"
-const USAPI_key = "bf41980b3f13f19a064dc35104bb2fdf"
+const API_KEY = "32b3079ab847125ac3e4bc7d5fa485ef"
+// const USAPI_key = "bf41980b3f13f19a064dc35104bb2fdf"
 
 //api.openweathermap.org/data/2.5/weather?q=London,uk
 
@@ -29,7 +29,7 @@ class App extends React.Component {
     };
     this.getLocation = this.getLocation.bind(this);
     this.getCoordinates = this.getCoordinates.bind(this);
-    //this.getWeather();
+    // this.reverseGeocodeCoordinates = this.reverseGeocodeCoordinates(this);
 
     this.weatherIcon = {
       Thunderstorm: "wi-thunderstorm",
@@ -86,7 +86,7 @@ class App extends React.Component {
   //---------------------------
   getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.getCoordinates);
+      navigator.geolocation.getCurrentPosition(this.getCoordinates,this.handleLocationError);
     } else {
       alert("Geolocation is not supported by this browser.");
     }
@@ -94,12 +94,44 @@ class App extends React.Component {
 
 
   getCoordinates(position) {
-    console.log(position);
+    // console.log(position);
     this.setState({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     })
+    // this.reverseGeocodeCoordinates();
   }
+
+  handleLocationError(error){
+    switch(error.code){
+      case error.PERMISSION_DENIED:
+        alert('User denied the request for Geolocation');
+        break;
+      case error.POSITION_UNAVAILABLE:
+        alert('Location information is unavailable');
+        break;
+      case error.TIMEOUT:
+        alert('Request to user location timed out');
+        break;
+      case error.UNKNOWN_ERROR:
+        alert('An unknown error occurred');
+        break;
+      default:
+        alert('An unknown error occurred');
+    }
+  }
+
+  // reverseGeocodeCoordinates(){
+  //   fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.state.latitude},${this.state.longitude}&sensor=false&key=${GOOGLE_API_KEY}`)
+  //   .then(response => response.json())
+  //   // .then(data => console.log(data))
+  //   .then(data => this.setState({
+  //     userAddress: data.results[0].formatted_address
+  //   }))
+  //   .then(error => alert(error))
+  // }
+
+
 
   getWeather = async (e) => {
 
@@ -109,7 +141,7 @@ class App extends React.Component {
     const country = e.target.elements.country.value;
 
     if (city && country) {
-      const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_key}`);
+      const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}`);
       const response = await api_call.json();
 
       console.log(response);
@@ -142,14 +174,15 @@ class App extends React.Component {
           weatherIcon={this.state.icon}
         />
 
-        <div class="w3-display-topleft text-light">
-          <h2>React Geolocation info</h2>
-          <button onClick={this.getLocation}>Get Coordinated</button>
-          <h4>HTML Coordinates</h4>
+        <div className="w3-display-topleft text-light">
+         
+          <div className="btn-coords">
+            <button className="btn btn-success" onClick={this.getLocation}>Get Coordinated</button>
+          </div>
           <p>Latitude: {this.state.latitude}</p>
           <p>Longitude: {this.state.longitude}</p>
-          <h4>Google Maps reverse geocoding</h4>
-          <p>Address: {this.state.userAddress}</p>
+          {/* <p>Address: {this.state.userAddress}</p> */}
+
         </div>
       </div>
     );
